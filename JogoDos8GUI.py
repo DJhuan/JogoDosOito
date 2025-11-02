@@ -45,7 +45,7 @@ class GUIJogoDos8:
         self.rodando = True
         
     def _criar_botoes(self):
-        """Cria os três botões abaixo do tabuleiro"""
+        """Cria os botões auxiliares usados pelo usuário"""
         y_botao = self.margem_topo + 3 * self.tamanho_celula + 60
         largura_botao = 150
         altura_botao = 50
@@ -79,7 +79,7 @@ class GUIJogoDos8:
         
     def desenhar_tabuleiro(self):
         """Desenha o tabuleiro 3x3 com as peças"""
-        tabuleiro = self.jogo.obter_tabuleiro_atual()
+        tabuleiro = self.jogo.tabuleiroInicial
         
         for i in range(3):
             for j in range(3):
@@ -174,16 +174,11 @@ class GUIJogoDos8:
             
         elif acao == 'proximo':
             self.auto_play = False
-            if not self.jogo.solucao:
-                # Gera a solução se ainda não foi gerada
-                pass
-            else:
-                self.jogo.proximo_passo()
+            self.jogo.proximo_passo()
                 
         elif acao == 'auto':
-            if not self.jogo.solucao:
-                # Gera a solução se ainda não foi gerada
-                pass
+            if len(self.jogo.solucao) == 0:
+                self.jogo.gerarSolucao()
 
             # Alterna o modo automático
             self.auto_play = not self.auto_play
@@ -191,7 +186,7 @@ class GUIJogoDos8:
     
     def atualizar(self):
         """Atualiza o estado do jogo"""
-        if self.auto_play and self.jogo.solucao:
+        if self.auto_play and len(self.jogo.solucao) > 0:
             self.contador_auto += 1
             if self.contador_auto >= self.velocidade_auto:
                 self.contador_auto = 0

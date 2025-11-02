@@ -9,6 +9,8 @@ class JogoDosOito:
     def __init__(self, tabuleiro_inicial=TABULEIRO_PADRAO, tabuleiro_final=TABULEIRO_PADRAO):
         self.tabuleiroInicial = tabuleiro_inicial
         self.tabuleiroFinal = tabuleiro_final
+        self.passo_atual = 0
+        self.solucao = []
 
     # Encontra a posição do 0 (vazio)
     def encontrar_vazio(self, tabuleiro): 
@@ -45,6 +47,8 @@ class JogoDosOito:
 
             visitados.add(estado_tupla)
             if estadoAtual == final:
+                self.solucao = caminho + [estadoAtual]
+                self.passo_atual = 0
                 return caminho + [estadoAtual]
 
             for tabuleiro in self.gerarMovimentos(estadoAtual):
@@ -76,6 +80,29 @@ class JogoDosOito:
             return novoTabuleiro
 
         return None
+
+    def passo_anterior(self):
+        "Tenta voltar para o passo anterior na solução. Retorna True se conseguiu, False caso contrário."
+        if self.solucao is None:
+            return False
+        if self.passo_atual > 0:
+            self.passo_atual -= 1
+            self.tabuleiroInicial = self.solucao[self.passo_atual]
+            return True
+
+    def proximo_passo(self):
+        "Tenta avançar para o próximo passo na solução. Retorna True se conseguiu, False caso contrário."
+        if self.solucao is None:
+            return False
+        if self.passo_atual < len(self.solucao) - 1:
+            self.passo_atual += 1
+            self.tabuleiroInicial = self.solucao[self.passo_atual]
+            return True
+
+    def verificar_solucao(self, tabuleiro=None):
+        if tabuleiro is None:
+            tabuleiro = self.tabuleiroInicial
+        return tabuleiro == self.tabuleiroFinal
 
 
 def main():
