@@ -20,7 +20,7 @@ if __name__ == "__main__":
     
     # Cria a instância do jogo (lógica)
     if modo_informado:
-        print("Usando busca informada (A* com heurística de Manhattan)")
+        print("Usando busca informada (A* & Manhattan)")
         jogo = JogoDosOitoInformada(tabuleiro_inicial, tabuleiro_final)
     else:
         print("Usando busca não informada (BFS)")
