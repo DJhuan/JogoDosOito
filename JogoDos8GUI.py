@@ -47,12 +47,11 @@ class GUIJogoDos8:
     def _criar_botoes(self):
         """Cria os botões auxiliares usados pelo usuário"""
         y_botao = self.margem_topo + 3 * self.tamanho_celula + 60
-        largura_botao = 150
+        largura_botao = 130
         altura_botao = 50
-        espacamento = 20
+        espacamento = 15
         
-        # Calcular posição x inicial para centralizar os 3 botões
-        x_inicial = (self.largura - (3 * largura_botao + 2 * espacamento)) // 2
+        x_inicial = (self.largura - (4 * largura_botao + 3 * espacamento)) // 2
         
         # Botão "Anterior"
         self.botoes.append({
@@ -75,6 +74,14 @@ class GUIJogoDos8:
                               largura_botao, altura_botao),
             'texto': 'Próximo',
             'acao': 'proximo'
+        })
+        
+        # Botão "Aleatorizar"
+        self.botoes.append({
+            'rect': pygame.Rect(x_inicial + 3 * (largura_botao + espacamento), y_botao, 
+                              largura_botao, altura_botao),
+            'texto': 'Aleatorizar',
+            'acao': 'aleatorizar'
         })
         
     def desenhar_tabuleiro(self):
@@ -112,19 +119,15 @@ class GUIJogoDos8:
         mouse_pos = pygame.mouse.get_pos()
         
         for botao in self.botoes:
-            # Verifica se o mouse está sobre o botão
             hover = botao['rect'].collidepoint(mouse_pos)
             cor = self.COR_BOTAO_HOVER if hover else self.COR_BOTAO
             
-            # Atualiza texto do botão Auto/Pausar
             if botao['acao'] == 'auto':
                 botao['texto'] = 'Pausar' if self.auto_play else 'Auto'
             
-            # Desenha o botão
             pygame.draw.rect(self.tela, cor, botao['rect'])
             pygame.draw.rect(self.tela, self.COR_BORDA, botao['rect'], 2)
             
-            # Desenha o texto do botão
             fonte = pygame.font.Font(None, 32)
             texto = fonte.render(botao['texto'], True, self.COR_BOTAO_TEXTO)
             texto_rect = texto.get_rect(center=botao['rect'].center)
@@ -143,7 +146,6 @@ class GUIJogoDos8:
         texto_rect = texto.get_rect(center=(self.largura // 2, 25))
         self.tela.blit(texto, texto_rect)
         
-        # Mensagem de vitória
         if self.jogo.verificar_solucao():
             fonte_grande = pygame.font.Font(None, 48)
             texto_vitoria = fonte_grande.render("Resolvido!", True, (0, 150, 0))
@@ -183,6 +185,11 @@ class GUIJogoDos8:
             # Alterna o modo automático
             self.auto_play = not self.auto_play
             self.contador_auto = 0
+        
+        elif acao == 'aleatorizar':
+            self.auto_play = False
+            self.jogo.aleatorizar_tabuleiro()
+            print("Tabuleiro aleatorizado!")
     
     def atualizar(self):
         """Atualiza o estado do jogo"""

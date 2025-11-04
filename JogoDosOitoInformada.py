@@ -1,6 +1,8 @@
 import copy
 import heapq
 import time
+import random
+
 TABULEIRO_PADRAO = [[1, 2, 3],
                      [4, 5, 6],
                      [7, 8, 0]]
@@ -9,6 +11,8 @@ class JogoDosOitoInformada:
     def __init__(self, tabuleiro_inicial=TABULEIRO_PADRAO, tabuleiro_final=TABULEIRO_PADRAO):
         self.tabuleiroInicial = tabuleiro_inicial
         self.tabuleiroFinal = tabuleiro_final
+        self.passo_atual = 0
+        self.solucao = []
     
     # Encontra a posição do 0 (vazio)
     def encontrar_vazio(self, tabuleiro): 
@@ -87,6 +91,8 @@ class JogoDosOitoInformada:
             visitados.add(estadoTupla)
 
             if estadoAtual == final:
+                self.solucao = caminho + [estadoAtual]
+                self.passo_atual = 0
                 return caminho + [estadoAtual]
 
             for tabuleiro in self.gerarMovimentos(estadoAtual):
@@ -95,6 +101,76 @@ class JogoDosOitoInformada:
                     heapq.heappush(fila, (profundidade + 1 + self.distanciaManhattan(tabuleiro), profundidade + 1, tabuleiro, caminho + [estadoAtual]))
 
         return None
+    
+    def passo_anterior(self):
+        """Tenta voltar para o passo anterior na solução. Retorna True se conseguiu, False caso contrário."""
+        if self.solucao is None:
+            return False
+        if self.passo_atual > 0:
+            self.passo_atual -= 1
+            self.tabuleiroInicial = self.solucao[self.passo_atual]
+            return True
+        return False
+
+    def proximo_passo(self):
+        """Tenta avançar para o próximo passo na solução. Retorna True se conseguiu, False caso contrário."""
+        if self.solucao is None:
+            return False
+        if self.passo_atual < len(self.solucao) - 1:
+            self.passo_atual += 1
+            self.tabuleiroInicial = self.solucao[self.passo_atual]
+            return True
+        return False
+
+    def verificar_solucao(self, tabuleiro=None):
+        """Verifica se o tabuleiro está resolvido"""
+        if tabuleiro is None:
+            tabuleiro = self.tabuleiroInicial
+        return tabuleiro == self.tabuleiroFinal
+
+    def aleatorizar_tabuleiro(self, num_movimentos=50):
+        """
+        Aleatoriza o tabuleiro fazendo movimentos aleatórios válidos.
+        Garante que o tabuleiro resultante seja solucionável.
+        
+        Args:
+            num_movimentos: Número de movimentos aleatórios a fazer
+        """
+        tabuleiro_temp = copy.deepcopy(self.tabuleiroFinal)
+        
+        # Faz movimentos aleatórios
+        direcoes = ['c', 'b', 'd', 'e']
+        ultimo_movimento = None
+        
+        for _ in range(num_movimentos):
+            random.shuffle(direcoes)
+            
+            for direcao in direcoes:
+                # Evita desfazer o último movimento
+                movimento_oposto = {
+                    'c': 'b',
+                    'b': 'c',
+                    'd': 'e',
+                    'e': 'd'
+                }
+                
+                if ultimo_movimento and direcao == movimento_oposto.get(ultimo_movimento):
+                    continue
+                
+                novo = self.moverVazio(direcao, tabuleiro_temp)
+                if novo is not None:
+                    tabuleiro_temp = novo
+                    ultimo_movimento = direcao
+                    break
+        
+        # Define o novo tabuleiro inicial
+        self.tabuleiroInicial = tabuleiro_temp
+        
+        # Limpa a solução anterior
+        self.solucao = []
+        self.passo_atual = 0
+        
+        return tabuleiro_temp
     
 
 def main():

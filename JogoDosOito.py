@@ -1,5 +1,6 @@
 import copy
 import time
+import random
 
 TABULEIRO_PADRAO = [[1, 2, 3],
                      [4, 5, 6],
@@ -103,6 +104,51 @@ class JogoDosOito:
         if tabuleiro is None:
             tabuleiro = self.tabuleiroInicial
         return tabuleiro == self.tabuleiroFinal
+
+    def aleatorizar_tabuleiro(self, num_movimentos=50):
+        """
+        Aleatoriza o tabuleiro fazendo movimentos aleatórios válidos.
+        Garante que o tabuleiro resultante seja solucionável.
+        
+        Args:
+            num_movimentos: Número de movimentos aleatórios a fazer
+        """
+        
+        tabuleiro_temp = copy.deepcopy(self.tabuleiroFinal)
+        
+        # Faz movimentos aleatórios
+        direcoes = ['c', 'b', 'd', 'e']
+        ultimo_movimento = None
+        
+        for _ in range(num_movimentos):
+            random.shuffle(direcoes)
+            
+            for direcao in direcoes:
+                # Evita desfazer o último movimento
+                movimento_oposto = {
+                    'c': 'b',
+                    'b': 'c',
+                    'd': 'e',
+                    'e': 'd'
+                }
+                
+                if ultimo_movimento and direcao == movimento_oposto.get(ultimo_movimento):
+                    continue
+                
+                novo = self.moverVazio(direcao, tabuleiro_temp)
+                if novo is not None:
+                    tabuleiro_temp = novo
+                    ultimo_movimento = direcao
+                    break
+        
+        # Define o novo tabuleiro inicial
+        self.tabuleiroInicial = tabuleiro_temp
+        
+        # Limpa a solução anterior
+        self.solucao = []
+        self.passo_atual = 0
+        
+        return tabuleiro_temp
 
 
 def main():
