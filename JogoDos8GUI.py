@@ -189,7 +189,6 @@ class GUIJogoDos8:
         elif acao == 'aleatorizar':
             self.auto_play = False
             self.jogo.aleatorizar_tabuleiro()
-            print("Tabuleiro aleatorizado!")
     
     def atualizar(self):
         """Atualiza o estado do jogo"""
