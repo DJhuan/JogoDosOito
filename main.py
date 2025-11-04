@@ -5,9 +5,9 @@ from JogoDos8GUI import GUIJogoDos8
 
 if __name__ == "__main__":
     tabuleiro_inicial = [
-        [8, 7, 4],
-        [5, 1, 3],
-        [0, 2, 6]
+        [3, 4, 0],
+        [7, 1, 5],
+        [6, 8, 2]
     ]
     tabuleiro_final = [
         [1, 2, 3],
