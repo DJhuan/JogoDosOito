@@ -11,8 +11,8 @@ if __name__ == "__main__":
     ]
     tabuleiro_final = [
         [1, 2, 3],
-        [4, 5, 6],
-        [7, 8, 0]
+        [8, 0, 4],
+        [7, 6, 5]
     ]
     
     # Verifica se o parâmetro -i foi passado

@@ -85,7 +85,7 @@ class JogoDosOitoInformada:
         visitados = set()
 
         while fila:
-            f, profundidade, estadoAtual, caminho = heapq.heappop(fila) #Pega o elemento com o menor valor da função f
+            f, profundidade, estadoAtual, caminho = heapq.heappop(fila)
 
             estadoTupla = tuple(tuple(linha) for linha in estadoAtual)
             visitados.add(estadoTupla)
